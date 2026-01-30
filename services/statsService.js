@@ -47,7 +47,8 @@ const scheduleSave = () => {
 };
 
 const trackRequest = (key, model, isSuccess) => {
-  const today = new Date().toISOString().split("T")[0];
+  // Use local time for accurate daily stats
+  const today = new Date().toLocaleDateString("en-CA"); // YYYY-MM-DD format
 
   // 1. Global Stats
   stats.totalRequests++;

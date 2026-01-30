@@ -273,3 +273,7 @@ h6 {
 .cursor-pointer {
     cursor: pointer;
 }
+/* Fix Table Background to use Body BG instead of White/Card BG */
+#keyTableBody tr td {
+    background-color: var(--bg-body);
+}

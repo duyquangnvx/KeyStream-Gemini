@@ -16,14 +16,13 @@ const handleRequest = async (req, res, io, attemptedKeys = []) => {
   }
 
   keyService.updateKeyStatus(keyObj.key, "active");
+  io.emit("stats_update", keyService.getKeyPool());
   const requestId = `req_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
   const currentKey = keyObj.key;
   let targetModel = req.body.model || "gemini-pro";
-  
+
   // Clean model name
-  targetModel = targetModel
-    .replace("models/", "")
-    .replace(/^Proxy:\s*/, "");
+  targetModel = targetModel.replace("models/", "").replace(/^Proxy:\s*/, "");
 
   io.emit("log", {
     id: requestId,
@@ -34,14 +33,17 @@ const handleRequest = async (req, res, io, attemptedKeys = []) => {
 
   try {
     const generationConfig = {
-        temperature: req.body.temperature,
-        maxOutputTokens: req.body.max_tokens,
-        topP: req.body.top_p,
-        topK: req.body.top_k
+      temperature: req.body.temperature,
+      maxOutputTokens: req.body.max_tokens,
+      topP: req.body.top_p,
+      topK: req.body.top_k,
     };
 
     // Clean undefined config values
-    Object.keys(generationConfig).forEach(key => generationConfig[key] === undefined && delete generationConfig[key]);
+    Object.keys(generationConfig).forEach(
+      (key) =>
+        generationConfig[key] === undefined && delete generationConfig[key],
+    );
 
     if (req.body.stream) {
       const result = await geminiService.generateContent(
@@ -49,7 +51,7 @@ const handleRequest = async (req, res, io, attemptedKeys = []) => {
         targetModel,
         req.body.messages,
         generationConfig,
-        true
+        true,
       );
 
       res.setHeader("Content-Type", "text/event-stream");
@@ -102,17 +104,18 @@ const handleRequest = async (req, res, io, attemptedKeys = []) => {
           message: "Stream Success.",
           timestamp: new Date().toLocaleTimeString(),
         });
-
+        io.emit("stats_update", keyService.getKeyPool());
       } catch (streamError) {
         console.error("Stream processing error:", streamError.message);
-        // Can't send JSON error here because headers are sent. 
         statsService.trackRequest(currentKey, targetModel, false);
+        keyService.incrementKeyErrors(currentKey);
         io.emit("log", {
-            id: requestId,
-            type: "error",
-            message: "Stream interrupted: " + streamError.message,
-            timestamp: new Date().toLocaleTimeString(),
+          id: requestId,
+          type: "error",
+          message: "Stream interrupted: " + streamError.message,
+          timestamp: new Date().toLocaleTimeString(),
         });
+        io.emit("stats_update", keyService.getKeyPool());
       }
     } else {
       const result = await geminiService.generateContent(
@@ -120,7 +123,7 @@ const handleRequest = async (req, res, io, attemptedKeys = []) => {
         targetModel,
         req.body.messages,
         generationConfig,
-        false
+        false,
       );
       const text = result.response.text();
 
@@ -150,11 +153,10 @@ const handleRequest = async (req, res, io, attemptedKeys = []) => {
       io.emit("stats_update", keyService.getKeyPool());
     }
   } catch (error) {
-    const isRateLimit = (
+    const isRateLimit =
       error.message.includes("429") ||
       error.message.includes("Quota") ||
-      error.message.includes("exhausted")
-    );
+      error.message.includes("exhausted");
 
     io.emit("log", {
       id: requestId,
@@ -175,12 +177,12 @@ const handleRequest = async (req, res, io, attemptedKeys = []) => {
       // Retry logic
       if (newAttemptedKeys.length < keyService.getKeyPool().length) {
         if (!res.headersSent) {
-             await new Promise((r) => setTimeout(r, 200));
-             return handleRequest(req, res, io, newAttemptedKeys);
+          await new Promise((r) => setTimeout(r, 200));
+          return handleRequest(req, res, io, newAttemptedKeys);
         }
       }
     }
-    
+
     // Only send error if headers not sent and NOT retrying
     if (!res.headersSent) {
       statsService.trackRequest(currentKey, targetModel, false);

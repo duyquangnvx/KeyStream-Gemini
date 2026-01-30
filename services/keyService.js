@@ -93,7 +93,9 @@ const updateKeyStatus = (key, status) => {
   const keyObj = keyPool.find((k) => k.key === key);
   if (keyObj) {
     keyObj.status = status;
-    keyObj.lastUsed = Date.now();
+    if (status === "active" || status === "cooldown") {
+      keyObj.lastUsed = Date.now();
+    }
   }
 };
 

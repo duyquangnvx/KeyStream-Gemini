@@ -3,121 +3,69 @@ let configModalInstance;
 
 // --- i18n ---
 const i18n = {
-    en: {
-        subtitle: "High-Performance API Orchestration Layer",
-        configBtn: "Config",
-        statusOnline: "ONLINE",
-        totalRequests: "Total Requests",
-        successRate: "Success Rate",
-        errors: "Errors",
-        avgDaily: "Avg Daily (7d)",
-        liveTraffic: "Live Traffic",
-        manageKeys: "Manage Keys",
-        addKeyLabel: "ADD GOOGLE AI STUDIO KEY",
-        addBtn: "Add",
-        keyNote: "Keys are automatically rotated. Valid keys are stored securely in <code>keys.json</code>.",
-        reqHistory: "Request History (7 Days)",
-        modelDist: "Model Distribution",
-        keyPoolStatus: "Key Pool Status",
-        thKeyHash: "Key Hash",
-        thStatus: "Status",
-        thUsage: "Usage (Session)",
-        thErrors: "Errors (Session)",
-        thTotalReq: "Total Req",
-        thTotalErr: "Total Err",
-        systemLogs: "System Logs",
-        configTitle: "Configuration Export",
-        configInstruct: "Add this to your <code>config.yaml</code> under <code>models:</code>",
-        scanModels: "🔄 Scan Models",
-        copyBtn: "Copy to Clipboard"
-    },
-    vi: {
-        subtitle: "Lớp điều phối API hiệu năng cao",
-        configBtn: "Cấu hình",
-        statusOnline: "TRỰC TUYẾN",
-        totalRequests: "Tổng Yêu cầu",
-        successRate: "Tỷ lệ Thành công",
-        errors: "Lỗi",
-        avgDaily: "TB Hàng ngày (7 ngày)",
-        liveTraffic: "Lưu lượng Trực tiếp",
-        manageKeys: "Quản lý Key",
-        addKeyLabel: "THÊM KEY GOOGLE AI STUDIO",
-        addBtn: "Thêm",
-        keyNote: "Key được xoay vòng tự động. Key hợp lệ được lưu an toàn trong <code>keys.json</code>.",
-        reqHistory: "Lịch sử Yêu cầu (7 ngày)",
-        modelDist: "Phân bổ Model",
-        keyPoolStatus: "Trạng thái Key Pool",
-        thKeyHash: "Mã Key",
-        thStatus: "Trạng thái",
-        thUsage: "Sử dụng (Phiên)",
-        thErrors: "Lỗi (Phiên)",
-        thTotalReq: "Tổng Req",
-        thTotalErr: "Tổng Lỗi",
-        systemLogs: "Nhật ký Hệ thống",
-        configTitle: "Xuất Cấu hình",
-        configInstruct: "Thêm nội dung này vào <code>config.yaml</code> dưới mục <code>models:</code>",
-        scanModels: "🔄 Quét Model",
-        copyBtn: "Sao chép vào Clipboard"
-    }
+  en: {
+    subtitle: "High-Performance API Orchestration Layer",
+    configBtn: "Config",
+    statusOnline: "ONLINE",
+    totalRequests: "Total Requests",
+    successRate: "Success Rate",
+    errors: "Errors",
+    avgDaily: "Avg Daily (7d)",
+    liveTraffic: "Live Traffic",
+    manageKeys: "Manage Keys",
+    addKeyLabel: "ADD GOOGLE AI STUDIO KEY",
+    addBtn: "Add",
+    keyNote:
+      "Keys are automatically rotated. Valid keys are stored securely in <code>keys.json</code>.",
+    reqHistory: "Request History (7 Days)",
+    modelDist: "Model Distribution",
+    keyPoolStatus: "Key Pool Status",
+    thKeyHash: "Key Hash",
+    thStatus: "Status",
+    thUsage: "Usage (Session)",
+    thErrors: "Errors (Session)",
+    thTotalReq: "Total Req",
+    thTotalErr: "Total Err",
+    systemLogs: "System Logs",
+    configTitle: "Configuration Export",
+    configInstruct:
+      "Add this to your <code>config.yaml</code> under <code>models:</code>",
+    scanModels: "🔄 Scan Models",
+    copyBtn: "Copy to Clipboard",
+  },
+  vi: {
+    subtitle: "Lớp điều phối API hiệu năng cao",
+    configBtn: "Cấu hình",
+    statusOnline: "TRỰC TUYẾN",
+    totalRequests: "Tổng Yêu cầu",
+    successRate: "Tỷ lệ Thành công",
+    errors: "Lỗi",
+    avgDaily: "TB Hàng ngày (7 ngày)",
+    liveTraffic: "Lưu lượng Trực tiếp",
+    manageKeys: "Quản lý Key",
+    addKeyLabel: "THÊM KEY GOOGLE AI STUDIO",
+    addBtn: "Thêm",
+    keyNote:
+      "Key được xoay vòng tự động. Key hợp lệ được lưu an toàn trong <code>keys.json</code>.",
+    reqHistory: "Lịch sử Yêu cầu (7 ngày)",
+    modelDist: "Phân bổ Model",
+    keyPoolStatus: "Trạng thái Key Pool",
+    thKeyHash: "Mã Key",
+    thStatus: "Trạng thái",
+    thUsage: "Sử dụng (Phiên)",
+    thErrors: "Lỗi (Phiên)",
+    thTotalReq: "Tổng Req",
+    thTotalErr: "Tổng Lỗi",
+    systemLogs: "Nhật ký Hệ thống",
+    configTitle: "Xuất Cấu hình",
+    configInstruct:
+      "Thêm nội dung này vào <code>config.yaml</code> dưới mục <code>models:</code>",
+    scanModels: "🔄 Quét Model",
+    copyBtn: "Sao chép vào Clipboard",
+  },
 };
 
-let currentLang = localStorage.getItem('lang') || 'en';
-
-const setLanguage = (lang) => {
-    currentLang = lang;
-    localStorage.setItem('lang', lang);
-    document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.getAttribute('data-i18n');
-        if (i18n[lang][key]) {
-            el.innerHTML = i18n[lang][key];
-        }
-    });
-    
-    // Update specific chart labels if needed (reload charts)
-    if (historicalRequestsChart) {
-        historicalRequestsChart.data.datasets[0].label = lang === 'en' ? 'Daily Requests' : 'Yêu cầu Hàng ngày';
-        historicalRequestsChart.update();
-    }
-    if (trafficChart) {
-        trafficChart.data.datasets[0].label = lang === 'en' ? 'Requests' : 'Yêu cầu';
-        trafficChart.update();
-    }
-};
-
-
-// --- Theme Management ---
-const getStoredTheme = () => localStorage.getItem('theme');
-const setStoredTheme = theme => localStorage.setItem('theme', theme);
-
-const getPreferredTheme = () => {
-  const storedTheme = getStoredTheme();
-  if (storedTheme) {
-    return storedTheme;
-  }
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-};
-
-const setTheme = theme => {
-  if (theme === 'auto' || theme === 'system') {
-    document.documentElement.setAttribute('data-theme', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    localStorage.removeItem('theme');
-  } else {
-    document.documentElement.setAttribute('data-theme', theme);
-    setStoredTheme(theme);
-  }
-  updateChartColors();
-};
-
-// Initial Theme Setup
-setTheme(getPreferredTheme());
-
-// Listen for system theme changes
-window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-  if (!getStoredTheme()) {
-    setTheme('system');
-  }
-});
-
+let currentLang = localStorage.getItem("lang") || "en";
 
 // --- Chart Instances ---
 let trafficChart;
@@ -130,7 +78,10 @@ const getPastDates = (numDays) => {
   for (let i = numDays - 1; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
-    dates.push(d.toISOString().split("T")[0]);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    dates.push(`${year}-${month}-${day}`);
   }
   return dates;
 };
@@ -142,31 +93,31 @@ const formatNumber = (num) => {
 };
 
 const getChartColors = () => {
-  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  const isDark = document.documentElement.getAttribute("data-theme") === "dark";
   return {
-    grid: isDark ? '#374151' : '#e5e7eb',
-    text: isDark ? '#9ca3af' : '#6b7280',
-    primary: '#6366f1',
-    primaryFade: 'rgba(99, 102, 241, 0.1)',
-    secondary: '#8b5cf6'
+    grid: isDark ? "#374151" : "#687285",
+    text: isDark ? "#9ca3af" : "#6b7280",
+    primary: "#6366f1",
+    primaryFade: "rgba(99, 102, 241, 0.1)",
+    secondary: "#8b5cf6",
   };
 };
 
 // --- Chart Initialization & Update Functions ---
 const updateChartColors = () => {
   const colors = getChartColors();
-  
+
   if (trafficChart) {
     trafficChart.options.scales.y.grid.color = colors.grid;
     trafficChart.options.scales.y.ticks.color = colors.text;
-    trafficChart.update('none');
+    trafficChart.update("none");
   }
   if (historicalRequestsChart) {
     historicalRequestsChart.options.scales.x.grid.color = colors.grid;
     historicalRequestsChart.options.scales.y.grid.color = colors.grid;
     historicalRequestsChart.options.scales.x.ticks.color = colors.text;
     historicalRequestsChart.options.scales.y.ticks.color = colors.text;
-    historicalRequestsChart.update('none');
+    historicalRequestsChart.update("none");
   }
 };
 
@@ -180,7 +131,7 @@ const initTrafficChart = () => {
       labels: Array(30).fill(""),
       datasets: [
         {
-          label: currentLang === 'en' ? "Requests" : "Yêu cầu",
+          label: currentLang === "en" ? "Requests" : "Yêu cầu",
           data: Array(30).fill(0),
           borderColor: "#6366f1",
           backgroundColor: (context) => {
@@ -207,8 +158,11 @@ const initTrafficChart = () => {
         y: {
           beginAtZero: true,
           grid: { color: colors.grid, drawBorder: false },
-          ticks: { color: colors.text, font: { family: "'Inter', sans-serif", size: 10 } },
-          border: { display: false }
+          ticks: {
+            color: colors.text,
+            font: { family: "'Inter', sans-serif", size: 10 },
+          },
+          border: { display: false },
         },
       },
       animation: false,
@@ -226,7 +180,9 @@ const initTrafficChart = () => {
 };
 
 const initHistoricalRequestsChart = () => {
-  const ctx = document.getElementById("historicalRequestsChart").getContext("2d");
+  const ctx = document
+    .getElementById("historicalRequestsChart")
+    .getContext("2d");
   const colors = getChartColors();
 
   historicalRequestsChart = new Chart(ctx, {
@@ -235,7 +191,7 @@ const initHistoricalRequestsChart = () => {
       labels: getPastDates(7),
       datasets: [
         {
-          label: currentLang === 'en' ? "Daily Requests" : "Yêu cầu Hàng ngày",
+          label: currentLang === "en" ? "Daily Requests" : "Yêu cầu Hàng ngày",
           data: Array(7).fill(0),
           backgroundColor: "#8b5cf6",
           borderRadius: 4,
@@ -248,15 +204,21 @@ const initHistoricalRequestsChart = () => {
       maintainAspectRatio: false,
       plugins: { legend: { display: false } },
       scales: {
-        x: { 
-            ticks: { color: colors.text, font: { family: "'Inter', sans-serif", size: 10 } }, 
-            grid: { display: false } 
+        x: {
+          ticks: {
+            color: colors.text,
+            font: { family: "'Inter', sans-serif", size: 10 },
+          },
+          grid: { display: false },
         },
         y: {
           beginAtZero: true,
-          ticks: { color: colors.text, font: { family: "'Inter', sans-serif", size: 10 } },
+          ticks: {
+            color: colors.text,
+            font: { family: "'Inter', sans-serif", size: 10 },
+          },
           grid: { color: colors.grid, drawBorder: false },
-          border: { display: false }
+          border: { display: false },
         },
       },
     },
@@ -288,14 +250,14 @@ const initModelUsageChart = () => {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      cutout: '75%',
+      cutout: "75%",
       plugins: {
         legend: {
-          position: 'right',
-          labels: { 
-              usePointStyle: true,
-              boxWidth: 8,
-              font: { family: "'Inter', sans-serif", size: 11 }
+          position: "right",
+          labels: {
+            usePointStyle: true,
+            boxWidth: 8,
+            font: { family: "'Inter', sans-serif", size: 11 },
           },
         },
       },
@@ -308,24 +270,79 @@ const updateTPS = (data) => {
   document.getElementById("tpsIndicator").innerText = `${total * 2} req/min`;
 };
 
+// --- Theme Management ---
+const getStoredTheme = () => localStorage.getItem("theme");
+const setStoredTheme = (theme) => localStorage.setItem("theme", theme);
+
+const getPreferredTheme = () => {
+  const storedTheme = getStoredTheme();
+  if (storedTheme) {
+    return storedTheme;
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+};
+
+const setTheme = (theme) => {
+  if (theme === "auto" || theme === "system") {
+    document.documentElement.setAttribute(
+      "data-theme",
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark"
+        : "light",
+    );
+    localStorage.removeItem("theme");
+  } else {
+    document.documentElement.setAttribute("data-theme", theme);
+    setStoredTheme(theme);
+  }
+  updateChartColors();
+};
+
+const setLanguage = (lang) => {
+  currentLang = lang;
+  localStorage.setItem("lang", lang);
+  document.querySelectorAll("[data-i18n]").forEach((el) => {
+    const key = el.getAttribute("data-i18n");
+    if (i18n[lang][key]) {
+      el.innerHTML = i18n[lang][key];
+    }
+  });
+
+  // Update specific chart labels if needed (reload charts)
+  if (historicalRequestsChart) {
+    historicalRequestsChart.data.datasets[0].label =
+      lang === "en" ? "Daily Requests" : "Yêu cầu Hàng ngày";
+    historicalRequestsChart.update();
+  }
+  if (trafficChart) {
+    trafficChart.data.datasets[0].label =
+      lang === "en" ? "Requests" : "Yêu cầu";
+    trafficChart.update();
+  }
+};
+
 // --- Data Rendering Functions ---
 async function fetchAndRenderAllData() {
   try {
-      // Fetch live key stats
-      const liveKeysPromise = fetch("/api/keys").then((res) => res.json());
-      // Fetch historical stats
-      const historicalStatsPromise = fetch("/api/stats").then((res) => res.json());
+    // Fetch live key stats
+    const liveKeysPromise = fetch("/api/keys").then((res) => res.json());
+    // Fetch historical stats
+    const historicalStatsPromise = fetch("/api/stats").then((res) =>
+      res.json(),
+    );
 
-      const [liveKeys, historicalStats] = await Promise.all([
-        liveKeysPromise,
-        historicalStatsPromise,
-      ]);
+    const [liveKeys, historicalStats] = await Promise.all([
+      liveKeysPromise,
+      historicalStatsPromise,
+    ]);
 
-      renderSummaryCards(historicalStats);
-      renderHistoricalCharts(historicalStats);
-      renderKeys(liveKeys, historicalStats.keyUsage);
+    renderSummaryCards(historicalStats);
+    renderHistoricalCharts(historicalStats);
+    renderKeys(liveKeys, historicalStats.keyUsage);
   } catch (err) {
-      console.error("Error fetching data:", err);
+    console.error("Error fetching data:", err);
   }
 }
 
@@ -334,23 +351,27 @@ function renderSummaryCards(stats) {
   const totalErrors = stats.totalErrors || 0;
   const totalSuccess = stats.totalSuccess || 0;
 
-  const successRate = totalRequests === 0
-    ? 0
-    : ((totalSuccess / totalRequests) * 100).toFixed(1);
+  const successRate =
+    totalRequests === 0 ? 0 : ((totalSuccess / totalRequests) * 100).toFixed(1);
 
-  document.getElementById("totalRequests").innerText = formatNumber(totalRequests);
+  document.getElementById("totalRequests").innerText =
+    formatNumber(totalRequests);
   document.getElementById("successRate").innerText = `${successRate}%`;
   document.getElementById("totalErrors").innerText = formatNumber(totalErrors);
 
   const past7Days = getPastDates(7);
   let last7DaysRequests = 0;
-  past7Days.forEach(date => {
+  past7Days.forEach((date) => {
     if (stats.dailyStats[date]) {
       last7DaysRequests += stats.dailyStats[date].requests;
     }
   });
-  const avgDailyRequests = past7Days.length > 0 ? (last7DaysRequests / past7Days.length).toFixed(0) : 0;
-  document.getElementById("avgDailyRequests").innerText = formatNumber(avgDailyRequests);
+  const avgDailyRequests =
+    past7Days.length > 0
+      ? (last7DaysRequests / past7Days.length).toFixed(0)
+      : 0;
+  document.getElementById("avgDailyRequests").innerText =
+    formatNumber(avgDailyRequests);
 }
 
 function renderHistoricalCharts(stats) {
@@ -359,7 +380,9 @@ function renderHistoricalCharts(stats) {
   const historicalData = historicalLabels.map(
     (date) => stats.dailyStats[date]?.requests || 0,
   );
-  historicalRequestsChart.data.labels = historicalLabels.map(date => date.slice(5)); // Show MM-DD
+  historicalRequestsChart.data.labels = historicalLabels.map((date) =>
+    date.slice(5),
+  ); // Show MM-DD
   historicalRequestsChart.data.datasets[0].data = historicalData;
   historicalRequestsChart.update();
 
@@ -371,24 +394,28 @@ function renderHistoricalCharts(stats) {
   modelUsageChart.update();
 }
 
-function renderKeys(liveKeys, historicalKeyStats) {
+function renderKeys(liveKeys, historicalKeyStats = {}) {
   const tbody = document.getElementById("keyTableBody");
+  if (!tbody) return;
   tbody.innerHTML = liveKeys
     .map((k) => {
-      const historical = historicalKeyStats[k.key] || { requests: 0, errors: 0 };
+      const historical = (historicalKeyStats && historicalKeyStats[k.key]) || {
+        requests: 0,
+        errors: 0,
+      };
       const isError = k.errors > 0;
       const isActive = k.status === "active";
-      
+
       return `
-        <tr class="${!isActive ? 'opacity-50' : ''}">
+        <tr class="${!isActive ? "opacity-50" : ""}">
             <td class="ps-4">
                 <div class="d-flex align-items-center">
-                    <div class="status-indicator ${isActive ? 'status-online' : 'status-offline'}"></div>
+                    <div class="status-indicator ${isActive ? "status-online" : "status-offline"}"></div>
                     <span class="font-monospace small text-secondary">...${k.key.slice(-6)}</span>
                 </div>
             </td>
             <td>
-                <span class="badge ${isActive ? 'bg-success' : 'bg-danger'} bg-opacity-10 text-${isActive ? 'success' : 'danger'} border border-${isActive ? 'success' : 'danger'} border-opacity-25 fw-normal">
+                <span class="badge ${isActive ? "bg-success" : "bg-danger"} bg-opacity-10 text-${isActive ? "success" : "danger"} border border-${isActive ? "success" : "danger"} border-opacity-25 fw-normal">
                     ${k.status.toUpperCase()}
                 </span>
             </td>
@@ -456,7 +483,7 @@ async function refreshModels() {
   } catch (e) {
     alert("Scan failed.");
   } finally {
-    // btn.innerHTML = originalText; 
+    // btn.innerHTML = originalText;
     btn.disabled = false;
   }
 }
@@ -472,14 +499,15 @@ function renderConfigYAML(models) {
     .join("\n");
 
   document.getElementById("configOutput").value = `${header}\n${body}`;
-  document.getElementById("modelCount").innerText = `Total available models: ${models.length}`;
+  document.getElementById("modelCount").innerText =
+    `Total available models: ${models.length}`;
 }
 
 function copyConfig() {
   const text = document.getElementById("configOutput");
   text.select();
   navigator.clipboard.writeText(text.value);
-  
+
   // Subtle feedback instead of button text change
   const btn = document.querySelector("#configModal .btn-primary-custom");
   const originalText = btn.innerText;
@@ -513,14 +541,34 @@ async function addKey() {
   }
 }
 
+// --- Initial Execution ---
+// Apply theme first (requires chart functions to be defined)
+setTheme(getPreferredTheme());
+
+// Listen for system theme changes
+window
+  .matchMedia("(prefers-color-scheme: dark)")
+  .addEventListener("change", () => {
+    if (!getStoredTheme()) {
+      setTheme("system");
+    }
+  });
+
 // --- Event Listeners ---
 socket.on("connect", () => {
   console.log("Socket connected!");
   fetchAndRenderAllData(); // Initial data load
 });
 socket.on("stats_update", (keys) => {
-  // This event only carries live key data, refresh full dashboard
-  fetchAndRenderAllData();
+  // Directly update key table for instant feedback
+  renderKeys(keys, {});
+  // Debounce full data fetch for summary cards and charts
+  if (!window._statsTimeout) {
+    window._statsTimeout = setTimeout(() => {
+      fetchAndRenderAllData();
+      window._statsTimeout = null;
+    }, 2000);
+  }
 });
 socket.on("log", (log) => {
   addLog(log);
