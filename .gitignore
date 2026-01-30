@@ -1,0 +1,31 @@
+# Node.js dependencies
+node_modules/
+
+# Environment variables / Sensitive data
+.env
+keys.json
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+*.log
+
+# Build artifacts
+build/
+dist/
+
+# IDE and editor files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+thumbs.db
+
+# Continue.dev agent files
+.continue/
+
+# Temporary files created during development/refactoring
+server_new.js
+public/script_new.js
+public/style_new.css

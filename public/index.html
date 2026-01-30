@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Command Center</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+    <div class="container-fluid p-4">
+        <!-- HEADER -->
+        <header class="d-flex justify-content-between align-items-center mb-4 border-bottom border-secondary pb-3">
+            <div>
+                <h1 class="glitch" style="margin-bottom: 0;">GEMINI_PROXY_HUB</h1>
+                <small class="text-muted">High Performance Reverse Proxy</small>
+            </div>
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn btn-cyber" onclick="showConfigModal()">
+                    <span class="me-2">⚙️</span>GET CONFIG
+                </button>
+                <div class="status-box">
+                    SYSTEM: <span class="text-success fw-bold">ONLINE</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="row g-4">
+            <!-- TRAFFIC CHART -->
+            <div class="col-md-8">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between">
+                        <span>LIVE_TRAFFIC_MONITOR</span>
+                        <small class="text-info" id="tpsIndicator">0 REQ/MIN</small>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="trafficChart" style="max-height: 250px;"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ADD KEY -->
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-header">INJECT_NEW_KEY</div>
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <label class="text-muted mb-2">Google AI Studio Key</label>
+                        <div class="input-group mb-3">
+                            <input type="text" id="newKeyInput" class="form-control" placeholder="AIzaSy...">
+                            <button onclick="addKey()" class="btn btn-outline-info">ADD</button>
+                        </div>
+                        <small class="text-muted" style="font-size: 0.7rem;">Keys are saved automatically to
+                            keys.json</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KEY STATUS TABLE -->
+            <div class="col-md-7">
+                <div class="card h-100">
+                    <div class="card-header">KEY_POOL_MATRIX</div>
+                    <div class="card-body p-0 table-responsive custom-scrollbar">
+                        <table class="table table-dark table-hover mb-0 align-middle">
+                            <thead>
+                                <tr class="text-secondary text-uppercase fs-7">
+                                    <th>Key Hash</th>
+                                    <th>Status</th>
+                                    <th>Usage</th>
+                                    <th>Errors</th>
+                                </tr>
+                            </thead>
+                            <tbody id="keyTableBody">
+                                <!-- Data injected by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LOG TERMINAL -->
+            <div class="col-md-5">
+                <div class="card h-100">
+                    <div class="card-header d-flex justify-content-between">
+                        <span>TERMINAL_OUTPUT</span>
+                        <button class="btn btn-sm btn-dark py-0"
+                            onclick="document.getElementById('logContainer').innerHTML=''">CLEAR</button>
+                    </div>
+                    <div class="card-body log-container font-monospace" id="logContainer">
+                        <div class="log-entry text-muted">System initialized... Waiting for requests.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONFIG MODAL -->
+    <div class="modal fade" id="configModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content card">
+                <div class="modal-header border-bottom-0">
+                    <h5 class="modal-title text-info">CONTINUE EXTENSION CONFIGURATION</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <span class="text-muted">Paste this <b>YAML</b> list under <code>models:</code> in your
+                            <code>config.yaml</code>:</span>
+                        <button id="btnRefresh" class="btn btn-sm btn-outline-warning" onclick="refreshModels()">
+                            🔄 SCAN GOOGLE MODELS
+                        </button>
+                    </div>
+                    <textarea id="configOutput" class="form-control bg-black text-success font-monospace" rows="12" readonly></textarea>
+                    <div class="mt-2 text-end text-muted" style="font-size: 0.8rem;" id="modelCount"></div>
+                </div>
+                <div class="modal-footer border-top-0">
+                    <button type="button" class="btn btn-cyber w-100" onclick="copyConfig()">COPY TO CLIPBOARD</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>

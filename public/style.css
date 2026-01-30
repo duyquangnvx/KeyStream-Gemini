@@ -1,0 +1,105 @@
+:root {
+    --bg: #050505;
+    --card: #111;
+    --border: #333;
+    --neon: #00f3ff;
+}
+
+body {
+    background: var(--bg);
+    color: #e0e0e0;
+    font-family: 'Consolas', monospace;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.card-header {
+    background: rgba(0, 243, 255, 0.05);
+    color: var(--neon);
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--border);
+    font-weight: bold;
+}
+
+.form-control {
+    background: #000;
+    border: 1px solid var(--border);
+    color: var(--neon);
+}
+
+.form-control:focus {
+    background: #000;
+    color: #fff;
+    border-color: var(--neon);
+    box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+}
+
+.btn-cyber {
+    background: transparent;
+    border: 1px solid var(--neon);
+    color: var(--neon);
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.btn-cyber:hover {
+    background: var(--neon);
+    color: #000;
+    box-shadow: 0 0 20px var(--neon);
+}
+
+.log-container {
+    height: 350px;
+    overflow-y: auto;
+    background: #000;
+    font-size: 0.8rem;
+    padding: 10px;
+    border-top: 1px solid var(--border);
+}
+
+.log-entry {
+    margin-bottom: 4px;
+    border-bottom: 1px solid #222;
+}
+
+.log-info {
+    color: #88f;
+}
+
+.log-error {
+    color: #f55;
+}
+
+.log-success {
+    color: #5f5;
+}
+
+.table-dark {
+    --bs-table-bg: transparent;
+}
+
+.table-dark td {
+    border-color: #222;
+}
+
+.glitch {
+    font-size: 2rem;
+    font-weight: 900;
+    text-shadow: 2px 0 #f00, -2px 0 #0ff;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border);
+}
