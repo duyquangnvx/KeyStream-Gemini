@@ -83,3 +83,26 @@ nodemon server.js
 ## License
 
 Distributed under the MIT License.
+
+## Frequently Asked Questions (FAQ)
+
+**1. Why should I use KeyStream-Gemini instead of Cursor Pro or other proxy tools?**
+* **Plug-and-Play:** This is a "5-minute setup" solution. While other tools might require complex Terminal configurations or DevOps knowledge, KeyStream-Gemini is designed for developers who want to focus on coding (like Game Devs or Web Devs) rather than environment troubleshooting. Just `npm install/start` and you're good to go.
+* **Total Control:** This is a **Local Proxy**. Your keys and data stay on your machine. You aren't dependent on any third-party middleman servers that might go down or lag.
+* **Stability:** If an error occurs, you can see exactly why in your own logs and fix it instantly.
+
+**2. How does this handle Google's strict Rate Limits (Quota)?**
+* The core of this tool is **Intelligent Key Rotation**. 
+* **Pro Tip:** By setting up a few "clone" accounts and enabling the Google Cloud Billing (to claim the $300 Free Trial), you can bypass the standard free tier limits. With a pool of 5-10 "Billing-enabled" keys, you will have thousands of requests per day—more than enough to build complex features all day long without hitting a wall.
+
+**3. Is my data secure?**
+* **100% Secure.** Since the proxy runs locally on your hardware, your API keys (stored in `keys.json`) and your source code never leave your environment. Data is sent directly from your machine to Google’s official APIs.
+
+**4. Can I use this with other AI tools besides Continue.dev?**
+* Yes! Because KeyStream-Gemini provides an **OpenAI-compatible endpoint**, you can use it with any tool that allows a custom `apiBase` or `baseURL`, including VS Code extensions, CLI tools, or even your own custom Python/Node.js scripts.
+
+**5. Why did you build this instead of using existing open-source proxies?**
+* I built this for myself first. I tried several complex open-source proxies, but they often took hours to set up, crashed unexpectedly, or were too "heavy" for simple local use. I wanted something lightweight that I could fix myself if it broke. I shared it because my friends found it useful, and I hope you do too!
+
+---
+*If you have ideas for new features or "underground" tips for optimizing Gemini usage, feel free to open an Issue or a Pull Request!*
