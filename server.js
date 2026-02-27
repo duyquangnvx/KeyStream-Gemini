@@ -57,7 +57,7 @@ process.on("SIGTERM", shutdown);
 process.on("SIGINT", shutdown);
 
 // --- Start Server ---
-server.listen(PORT, () => {
+server.listen(PORT, '127.0.0.1', () => {
     console.log(`
 ===========================================`);
     console.log(`🚀 GEMINI PROXY IS RUNNING`);
